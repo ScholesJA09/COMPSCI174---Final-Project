@@ -13,10 +13,11 @@ int check_input(std::string& temp)
 		}
 		return num;
 	}
-	catch (std::exception e)
+	catch (const std::exception& e)
 	{
 		std::cout << "\nInput must be a number.\n" << std::endl;
 	}
+	return 0;
 }
 
 int main()

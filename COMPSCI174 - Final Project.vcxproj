@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Final Project.cpp" />
+    <ClCompile Include="item.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="item.h" />

@@ -8,9 +8,9 @@ int check_input(std::string& temp)
 	try
 	{
 		int num = std::stoi(temp);
-		if (num > 5 || num < 1)
+		if (num > 7 || num < 1)
 		{
-			std::cout << "\nInput must be 1-5.\n" << std::endl;
+			std::cout << "\nInput must be 1-7.\n" << std::endl;
 		}
 		return num;
 	}
@@ -19,6 +19,18 @@ int check_input(std::string& temp)
 		std::cout << "\nInput must be a number.\n" << std::endl;
 	}
 	return 0;
+}
+
+// Stretch #6 - Returns the sales tax rate for the given state abbreviation
+// Returns -1 if the state is not recognized
+double get_tax_rate(const std::string& state)
+{
+	if (state == "WI") return 0.05;   // Wisconsin  5.0%
+	if (state == "IL") return 0.0625; // Illinois   6.25%
+	if (state == "CA") return 0.0725; // California 7.25%
+	if (state == "TX") return 0.0625; // Texas      6.25%
+	if (state == "NY") return 0.04;   // New York   4.0%
+	return -1;
 }
 
 int main()
@@ -44,7 +56,7 @@ int main()
 
 	std::string temp;
 	int num = 0;
-	while (!(num == 5))
+	while (!(num == 7))
 	{
 		//Options
 		std::cout << "Welcome! Please choose from the following:" << std::endl;
@@ -52,7 +64,9 @@ int main()
 		std::cout << "[2] View items in cart" << std::endl;
 		std::cout << "[3] View items for purchase" << std::endl;
 		std::cout << "[4] Check out" << std::endl;
-		std::cout << "[5] Exit" << std::endl;
+		std::cout << "[5] Remove item from cart" << std::endl;  // Stretch #2
+		std::cout << "[6] Sort cart by price" << std::endl;     // Stretch #3
+		std::cout << "[7] Exit" << std::endl;
 
 		std::getline(std::cin, temp);
 		num = check_input(temp);
@@ -96,27 +110,59 @@ int main()
 			}
 			else
 			{
-				double total_price = 0.0;
-				std::cout << "\n--- Checking Out --- " << std::endl;
-
-				// FIX: apply fixed + setprecision so all dollar amounts print as X.XX
+				double subtotal = 0.0;
+				std::cout << "\n--- Checking Out ---" << std::endl;
 				std::cout << std::fixed << std::setprecision(2);
 
 				for (int i = 0; i < current_cart_qty; i++)
 				{
 					std::cout << cart[i].get_name() << " - $" << cart[i].get_price() << std::endl;
-					total_price += cart[i].get_price();
+					subtotal += cart[i].get_price();
 				}
 
+				// Stretch #6 - Apply sales tax based on state
 				std::cout << "--------------------" << std::endl;
-				std::cout << "TOTAL: $" << total_price << std::endl;
+				std::cout << "Subtotal: $" << subtotal << std::endl;
+
+				std::string state;
+				double tax_rate = -1;
+				while (tax_rate == -1)
+				{
+					std::cout << "Enter your state abbreviation for tax (WI, IL, CA, TX, NY): ";
+					std::getline(std::cin, state);
+
+					// Convert to uppercase so "wi" works the same as "WI"
+					for (char& c : state) c = toupper(c);
+
+					tax_rate = get_tax_rate(state);
+					if (tax_rate == -1)
+					{
+						std::cout << "State not recognized. Please enter WI, IL, CA, TX, or NY." << std::endl;
+					}
+				}
+
+				double tax_amount = subtotal * tax_rate;
+				double total = subtotal + tax_amount;
+
+				std::cout << "Tax (" << state << " " << (tax_rate * 100) << "%): $" << tax_amount << std::endl;
+				std::cout << "TOTAL: $" << total << std::endl;
 				std::cout << "Thank you for your purchase!\n" << std::endl;
 
 				current_cart_qty = 0;
 			}
 		}
+		else if (num == 5)
+		{
+			// Stretch #2 - Remove item from cart
+			items[0].remove_item(items, cart, current_cart_qty);
+		}
+		else if (num == 6)
+		{
+			// Stretch #3 - Sort cart by price
+			items[0].sort_cart(cart, current_cart_qty);
+		}
 	}
-	//User Inputs 5
+	//User Inputs 7
 	std::cout << "\nCome back soon!" << std::endl;
 	return 0;
 }

@@ -98,7 +98,10 @@ int main()
 			{
 				double total_price = 0.0;
 				std::cout << "\n--- Checking Out --- " << std::endl;
-				
+
+				// FIX: apply fixed + setprecision so all dollar amounts print as X.XX
+				std::cout << std::fixed << std::setprecision(2);
+
 				for (int i = 0; i < current_cart_qty; i++)
 				{
 					std::cout << cart[i].get_name() << " - $" << cart[i].get_price() << std::endl;
